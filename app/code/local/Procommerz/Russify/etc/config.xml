@@ -50,6 +50,13 @@
                 </observers>
             </core_block_abstract_to_html_after>
         </events>
+        <layout>
+            <updates>
+                <procommerz_russify>
+                    <file>procommerz_russify.xml</file>
+                </procommerz_russify>
+            </updates>
+        </layout>
     </adminhtml>
     <admin>
         <routers>

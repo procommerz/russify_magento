@@ -8,33 +8,35 @@
 
 class  Procommerz_Russify_Block_Sales_Order_View_Russify extends Mage_Adminhtml_Block_Template
 {
+
     /**
      * Set template
      */
     protected function _construct()
     {
+        parent::_construct();
         $this->setTemplate('procommerz_russify/sales/order/view/russify.phtml');
+
+        return $this;
     }
 
-    protected function _prepareLayout()
+    /**
+     * Retrieve available order
+     *
+     * @return Mage_Sales_Model_Order
+     */
+    public function getOrder()
     {
-        $onclick = "submitAndReloadArea($('order_history_block').parentNode, '".$this->getSubmitUrl()."')";
-        $button = $this->getLayout()->createBlock('adminhtml/widget_button')
-            ->setData(array(
-                'label'   => Mage::helper('sales')->__('Do Action'),
-                'class'   => 'save',
-                'onclick' => $onclick
-            ));
-        $this->setChild('submit_button', $button);
-        return parent::_prepareLayout();
+        if ($this->hasOrder()) {
+            return $this->getData('order');
+        }
+        if (Mage::registry('current_order')) {
+            return Mage::registry('current_order');
+        }
+        if (Mage::registry('order')) {
+            return Mage::registry('order');
+        }
+        Mage::throwException(Mage::helper('sales')->__('Cannot get order instance'));
     }
 
-    public function getSubmitUrl()
-    {
-        $url = Mage :: getModel('adminhtml/url')->getUrl('russify/validation/check', array(
-            '_secure' => true,
-        ));
-
-        return $url;
-    }
 }

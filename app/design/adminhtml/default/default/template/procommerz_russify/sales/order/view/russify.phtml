@@ -1,19 +1,66 @@
+<?php $_shippingAddress = $this->getOrder()->getShippingAddress() ?>
 <div class="box-right">
     <div class="entry-edit">
         <div class="entry-edit-head">
-            <h4 class="icon-head head-russify"><?php echo Mage::helper('procommerz_russify')->__('Russify Validation') ?></h4>
+            <h4 class="icon-head head-russify"><?php echo $this->__('Russify.me Address Validation') ?></h4>
         </div>
-        <fieldset>
-            <form id="russif_form"  method="POST">
-                <div class="f-left">
-                    <p><?php echo $this->__('Region Identificator') ?></p>
-                </div>
-            </form>
-            <div class="f-right">
-                <?php echo $this->getChildHtml('submit_button') ?>
+        <fieldset class="russify-np">
+            <div>
+                <p><?php echo $this->__('Current shipping address:') ?></p>
+                <address>
+                    <?php echo Mage::helper('procommerz_russify')->getFormattedAddress($_shippingAddress) ?>
+                </address>
             </div>
-            <div class="clear"></div>
+            <div id="russify_box" style="padding:10px;">
+                <div class="f-left not-validated">
+                    <div class="red">&nbsp;</div>
+                    <p><?php echo $this->__('Not Validated') ?></p>
+                </div>
+                <div class="f-right">
+                    <a class="not-validated" href="#" onclick="validate()" ><?php echo $this->__('Validate') ?></a>
+                </div>
+            </div>
+            <div id="russify_loading" style="display: none;">
+                <span>
+                    <img src="<?php echo $this->getSkinUrl('images/ajax-loader-tr.gif') ?>" alt="<?php echo Mage::helper('adminhtml')->__('Loading...') ?>"/>
+                    <br/><?php echo Mage::helper('adminhtml')->__('Refreshing...') ?>
+                </span>
+            </div>
         </fieldset>
     </div>
 </div>
 <div class="clear"></div>
+<script type="text/javascript">
+    //<![CDATA[
+    var russifyLoading = $('russify_loading');
+    var usageBlock = Element.extend($('russify_box'));
+    var address = <?php echo Mage::helper('procommerz_russify')->prepareRequestArray($_shippingAddress) ?>;
+    var checkRewardsUsageUri = "<?php echo $this->getUrl('russify/validation/check'
+        , array('_forced_secure' => $this->getRequest()->isSecure())) ?>";
+
+    validate = function() {
+        russify_box.hide();
+        russifyLoading.show();
+        // temporarily disable default Magento loader handler
+        Ajax.Responders.unregister(varienLoaderHandler.handler);
+        (function displayUsage() {
+            new Ajax.Request(checkRewardsUsageUri,{
+                parameters: {isAjax: 1, method: 'POST', address: Object.toJSON(address)},
+                onSuccess: function(t) {
+                    russify_box.remove();
+                    var result = t.responseJSON;
+                    usageBlock.down().insert({before: result});
+                    russifyLoading.hide();
+                },
+                onFailure: function(){
+                    alert('<?php echo $this->jsQuoteEscape($this->__('Server Error. Please try again.')) ?>');
+                    russifyLoading.hide();
+                    russify_box.show();
+                }
+            });
+        })();
+        // restore default Magento loader handler
+        Ajax.Responders.register(varienLoaderHandler.handler);
+    }
+    //]]>
+</script>
