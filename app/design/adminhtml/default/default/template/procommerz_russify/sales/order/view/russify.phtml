@@ -11,13 +11,13 @@
                     <?php echo Mage::helper('procommerz_russify')->getFormattedAddress($_shippingAddress) ?>
                 </address>
             </div>
-            <div id="russify_box" style="padding:10px;">
+            <div id="russify_box">
                 <div class="f-left not-validated">
                     <div class="red">&nbsp;</div>
                     <p><?php echo $this->__('Not Validated') ?></p>
                 </div>
                 <div class="f-right">
-                    <a class="not-validated" href="#" onclick="validate()" ><?php echo $this->__('Validate') ?></a>
+                    <a class="not-validated form-button" href="#" onclick="validate()" ><?php echo $this->__('Validate') ?></a>
                 </div>
             </div>
             <div id="russify_loading" style="display: none;">

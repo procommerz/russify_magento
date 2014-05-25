@@ -19,6 +19,15 @@
         <models>
             <procommerz_russify>
                 <class>Procommerz_Russify_Model</class>
+                <resourceModel>procommerz_russify_resource</resourceModel>
+                <procommerz_russify_resource>
+                    <class>Procommerz_Russify_Model_Resource</class>
+                    <entities>
+                        <result>
+                            <table>procommerz_result</table>
+                        </result>
+                    </entities>
+                </procommerz_russify_resource>
             </procommerz_russify>
         </models>
         <resources>
