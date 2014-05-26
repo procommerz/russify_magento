@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Procommerz_Russify>
-            <version>0.1.0</version>
+            <version>0.1.1</version>
         </Procommerz_Russify>
     </modules>
     <global>
@@ -20,22 +20,35 @@
             <procommerz_russify>
                 <class>Procommerz_Russify_Model</class>
                 <resourceModel>procommerz_russify_resource</resourceModel>
-                <procommerz_russify_resource>
-                    <class>Procommerz_Russify_Model_Resource</class>
-                    <entities>
-                        <result>
-                            <table>procommerz_result</table>
-                        </result>
-                    </entities>
-                </procommerz_russify_resource>
             </procommerz_russify>
+            <procommerz_russify_resource>
+                <class>Procommerz_Russify_Model_Resource</class>
+                <entities>
+                    <result>
+                        <table>russify_result</table>
+                    </result>
+                </entities>
+            </procommerz_russify_resource>
         </models>
         <resources>
             <procommerz_russify_setup>
                 <setup>
                     <module>Procommerz_Russify</module>
                 </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
             </procommerz_russify_setup>
+            <procommerz_russify_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </procommerz_russify_write>
+            <procommerz_russify_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </procommerz_russify_read>
         </resources>
     </global>
     <adminhtml>
