@@ -1,4 +1,7 @@
-<?php $_shippingAddress = $this->getOrder()->getShippingAddress() ?>
+<?php $_helper = Mage::helper('procommerz_russify'); ?>
+<?php $_order = $this->getOrder(); ?>
+<?php $_validateStatus = $_helper->getRussifyStatus($_order->getEntityId()); ?>
+<?php $_shippingAddress = $_order->getShippingAddress() ?>
 <div class="box-right">
     <div class="entry-edit">
         <div class="entry-edit-head">
@@ -11,15 +14,42 @@
                     <?php echo Mage::helper('procommerz_russify')->getFormattedAddress($_shippingAddress) ?>
                 </address>
             </div>
+
             <div id="russify_box">
-                <div class="f-left not-validated">
-                    <div class="red">&nbsp;</div>
-                    <p><?php echo $this->__('Not Validated') ?></p>
-                </div>
-                <div class="f-right">
-                    <a class="not-validated form-button" href="#" onclick="validate()" ><?php echo $this->__('Validate') ?></a>
-                </div>
+                <?php if($_validateStatus == 'NOT_VALIDATED'): ?>
+                    <div class="f-left not-validated">
+                        <div class="icon-wrapper">
+                            <i class="icon-picture"></i>
+                        </div>
+                        <p><?php echo $this->__('Not Validated') ?></p>
+                    </div>
+                    <div class="f-right">
+                        <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Validate') ?></a>
+                    </div>
+                <?php elseif($_validateStatus == 'VALID'): ?>
+                    <div class="f-left validated">
+                        <div class="icon-wrapper">
+                            <i class="icon-picture"></i>
+                        </div>
+                        <p><?php echo $this->__('Adress is valid') ?></p>
+                    </div>
+                    <div class="f-right">
+                        <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Re-Validate') ?></a>
+                    </div>
+                    <?php else:?>
+                    <div class="f-left invalid">
+                        <div class="icon-wrapper">
+                            <i class="icon-picture"></i>
+                        </div>
+                        <p><?php echo $this->__('Adress Invalid') ?></p>
+                    </div>
+                    <div class="f-right">
+                        <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Re-Validate') ?></a>
+                    </div>
+                <?php endif;?>
             </div>
+
+
             <div id="russify_loading" style="display: none;">
                 <span>
                     <img src="<?php echo $this->getSkinUrl('images/ajax-loader-tr.gif') ?>" alt="<?php echo Mage::helper('adminhtml')->__('Loading...') ?>"/>
@@ -34,9 +64,8 @@
     //<![CDATA[
     var russifyLoading = $('russify_loading');
     var usageBlock = Element.extend($('russify_box'));
-    var address = <?php echo Mage::helper('procommerz_russify')->prepareRequestArray($_shippingAddress) ?>;
-    var checkRewardsUsageUri = "<?php echo $this->getUrl('russify/validation/check'
-        , array('_forced_secure' => $this->getRequest()->isSecure())) ?>";
+    var address = <?php echo json_encode(Mage::helper('procommerz_russify')->prepareRequestArray($_shippingAddress)) ?>;
+    var checkRewardsUsageUri = "<?php echo $this->getUrl('russify/validation/check', array('_forced_secure' => $this->getRequest()->isSecure())) ?>";
 
     validate = function() {
         russify_box.hide();

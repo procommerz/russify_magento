@@ -9,6 +9,9 @@ class Procommerz_Russify_Helper_Data extends Mage_Core_Helper_Abstract
 {
     const DEFAULT_COUNTRY = 'Russia';
 
+    const STATUS_NOT_VALIDATED  = 'NOT_VALIDATED';
+    const STATUS_VALID          = 'VALID';
+    const STATUS_INVALID        = 'INVALID';
 
     /** Format Shopping Address for Russify template
      *
@@ -23,7 +26,6 @@ class Procommerz_Russify_Helper_Data extends Mage_Core_Helper_Abstract
         . ", " .  $address->getCity()
         . ", <br >" . $address->getData('street');
     }
-
 
     /** Prepare Shipping Address for Russify.me
      *
@@ -52,4 +54,26 @@ class Procommerz_Russify_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $array;
     }
+
+    /** Check Russify validation status
+     *
+     * @param $orderId
+     * @return bool
+     */
+    public function getRussifyStatus($orderId)
+    {
+        $russifyInfo = Mage::getModel('procommerz_russify/result')->getCollection()->getInfoByOrderId($orderId);
+
+        if (!empty($russifyInfo)) {
+
+            if($russifyInfo[$orderId]->getIsValidated()) {
+                return self::STATUS_VALID;
+            } else {
+                return self::STATUS_INVALID;
+            }
+        }
+
+        return self::STATUS_NOT_VALIDATED;
+    }
+
 }

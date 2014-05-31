@@ -1,4 +1,38 @@
-#russify_box .not-validated { color: #840705; width: 180px; line-height: 40px;}
-#russify_box div.red { height: 40px; width: 40px; margin-right: 15px; background:url('images/red.png'); float: left;}
-#russify_box a {text-decoration: none;line-height: 1.35em; background-repeat: no-repeat; background-position: 0 50%; background: url(../images/btn_bg.gif) repeat-x 0 100%;}
-#russify_box a.not-validated {color: #fff;}
+@font-face{font-family:'FontAwesome';
+    src:url('fonts/fontawesome-webfont.eot?v=4.1.0');
+    src:url('fonts/fontawesome-webfont.eot?#iefix&v=4.1.0') format('embedded-opentype'),
+    url('fonts/fontawesome-webfont.woff?v=4.1.0') format('woff'),
+    url('fonts/fontawesome-webfont.ttf?v=4.1.0') format('truetype'),
+    url('fonts/fontawesome-webfont.svg?v=4.1.0#fontawesomeregular') format('svg');
+    font-weight:normal;font-style:normal}
+
+.icon-picture:before {
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    color: #fff;
+    font-size: 18px;
+}
+
+#russify_box .validated { color:#4C7A34 }
+#russify_box .validated .icon-wrapper { background: #4C7A34; text-align: center; }
+#russify_box .validated .icon-wrapper .icon-picture:before {content: "\f00c"; }
+#russify_box .not-validated,
+#russify_box .invalid { color: #840705;}
+#russify_box .not-validated .icon-wrapper,
+#russify_box .invalid .icon-wrapper { background: #840705;text-align: center; }
+#russify_box .not-validated .icon-wrapper .icon-picture:before,
+#russify_box .invalid .icon-wrapper .icon-picture:before { content: "\f00d"; }
+
+#russify_box .f-left { width: 180px; line-height: 40px; }
+#russify_box .f-right { margin-top: 10px; }
+#russify_box div.icon-wrapper { height: 40px; width: 40px; margin-right: 15px; float: left; }
+#russify_box a {
+    color: #fff;
+    text-decoration: none;
+    line-height: 1.35em;
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+    background: url(../images/btn_bg.gif) repeat-x 0 100%;
+}

@@ -7,10 +7,8 @@
                 <name>russify/russify.css</name>
             </action>
         </reference>
-        <reference name="order_tab_info">
-            <block type="procommerz_russify/russify" name="russify" as="russify" template="procommerz_russify/sales/order/view/russify.phtml">
-                <block type="procommerz_russify/russifyResult" name="russify_result" as="russify_result" template="procommerz_russify/sales/order/view/russify_result.phtml" />
-            </block>
+        <reference name="russify">
+            <block type="procommerz_russify/russify" name="russify" as="russify" template="procommerz_russify/sales/order/view/russify.phtml" />
         </reference>
     </adminhtml_sales_order_view>
 </layout>

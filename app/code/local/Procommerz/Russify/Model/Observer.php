@@ -13,7 +13,7 @@ class Procommerz_Russify_Model_Observer
         if($block->getId() == 'order_info' && $block->getRequest()->getControllerName() == 'sales_order') {
             $transport = $observer->getTransport();
             $html = $transport->getHtml();
-            $postHtml = Mage::app()->getLayout()->createBlock('procommerz_russify/sales_order_view_russify')->toHtml();
+            $postHtml = Mage::app()->getLayout()->createBlock('procommerz_russify/russify')->toHtml();
             $pattern = '/(<input type="hidden" name="order_id" value="[^"]*"\\/>)/';
             $replacement = $postHtml. '${1}';
             $html = preg_replace($pattern, $replacement, $html);

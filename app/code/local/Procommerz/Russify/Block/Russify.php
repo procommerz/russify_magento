@@ -6,7 +6,7 @@
  * @author     Denis Kolesnichenko <denis@mobiquest.ru>
  */
 
-class  Procommerz_Russify_Block_Sales_Order_View_Russify extends Mage_Adminhtml_Block_Template
+class  Procommerz_Russify_Block_Russify extends Mage_Adminhtml_Block_Template
 {
 
     /**
