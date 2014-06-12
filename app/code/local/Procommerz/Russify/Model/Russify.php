@@ -12,36 +12,55 @@ class Procommerz_Russify_Model_Russify
     private $_command;
     private $_params;
 
-    public function getUrl()
+    public function getPostString()
     {
-        $url = $this->_url . $this->_command ;
         $queryString = '';
         if (count($this->_params)) {
             foreach ($this->_params as $key=> $value) {
-                $queryString .= "&" . $key . " = ". $value;
+                $queryString .= "&" . $key . "=". $value ."";
             }
         }
-        $url .= "?format=json" .$queryString;
 
-        return $url;
+        return substr($queryString, 1);
     }
 
     protected function call()
     {
-        if ($curl = curl_init()) {
             $result = false;
-            $header = array('Content-Type: text/json', 'Accept: application/json');
+            $accessToken = Mage::getStoreConfig('procommerz/general/russify_api');
+            $accessID = Mage::getStoreConfig('procommerz/general/russify_id');
+            $apiUrl = 'http://russify.me/api/validate';
+            $timestamp = gmdate('c');
+            $contentType = 'application/x-www-form-urlencoded';
+            $fields = (array)$this->_params;
+            foreach ($fields as $key => $value) {
+                $fields[$key] = Mage::helper('procommerz_russify')->transliterate($value);
+            }
 
-            curl_setopt($curl, CURLOPT_URL, $this->getUrl());
+            $postFields = str_replace('+', '%20', http_build_query($fields));
+//          country=Russia&region=Moskovskaia%20oblast&city=Moskva&address=ul.%20Aleksandra%20Solzhenitcyna%20d.%2027&zipcode=123123
+//            $postFields =str_replace(' ', '%20', $this->getPostString());
+//           country=Russia&region=Московская%20область&city=Москва&address=ул.%20Александра%20Солженицына%20д.%2027&zipcode=123123
+            $content_MD5 = base64_encode(pack("H*", md5($postFields)));
+            $canonicalStr = $contentType .','. $content_MD5 .','. parse_url($apiUrl, PHP_URL_PATH) .','. $timestamp;
+            $signature = base64_encode(hash_hmac('sha1', $canonicalStr, $accessToken, true));
+            $header = array(
+                'Content-Type: ' . $contentType,
+                'Content-Length: ' . strlen($postFields),
+                'date: ' . $timestamp,
+                'content-md5: ' . $content_MD5,
+                'authorization: APIAuth ' . $accessID .':'. $signature,
+            );
+
+        if ($curl = curl_init($apiUrl)) {
+            curl_setopt($curl, CURLOPT_POST, 1);
             curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-            curl_setopt($curl, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $postFields);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_TIMEOUT, 60);
             try {
                 $response = curl_exec($curl);
-                $result   = $this->parseResult($response, $curl);
+                $result   = json_decode($response);
             } catch (Exception $e) {
                 Mage::logException($e);
             }
@@ -79,13 +98,7 @@ class Procommerz_Russify_Model_Russify
     public function validate($address)
     {
         $this->_command = 'validate';
-        $this->_params  = array(
-            'country'   => $address->getCountryCode(),  //not required Russia by default
-            'region'    => $address->getRegion(),       //not required
-            'city'      => $address->getCity(),
-            'address'   => $address->getData('street'),
-            'zipcode'   => $address->getPostcode()
-        );
+        $this->_params  = $address;
 
         return $this->call();
     }

@@ -28,6 +28,7 @@
 #russify_box .f-left { width: 180px; line-height: 40px; }
 #russify_box .f-right { margin-top: 10px; }
 #russify_box div.icon-wrapper { height: 40px; width: 40px; margin-right: 15px; float: left; }
+#russify-result a,
 #russify_box a {
     color: #fff;
     text-decoration: none;
@@ -36,3 +37,7 @@
     background-position: 0 50%;
     background: url(../images/btn_bg.gif) repeat-x 0 100%;
 }
+#russify-result {margin: 15px 0;}
+#russify-result hr { margin-bottom: 10px;}
+#russify-result div {margin: 10px 0;}
+#russify-result input {margin-right: 10px;}

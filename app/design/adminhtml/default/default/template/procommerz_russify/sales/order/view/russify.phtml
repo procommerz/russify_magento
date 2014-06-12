@@ -1,6 +1,4 @@
-<?php $_helper = Mage::helper('procommerz_russify'); ?>
 <?php $_order = $this->getOrder(); ?>
-<?php $_validateStatus = $_helper->getRussifyStatus($_order->getEntityId()); ?>
 <?php $_shippingAddress = $_order->getShippingAddress() ?>
 <div class="box-right">
     <div class="entry-edit">
@@ -16,41 +14,10 @@
             </div>
 
             <div id="russify_box">
-                <?php if($_validateStatus == 'NOT_VALIDATED'): ?>
-                    <div class="f-left not-validated">
-                        <div class="icon-wrapper">
-                            <i class="icon-picture"></i>
-                        </div>
-                        <p><?php echo $this->__('Not Validated') ?></p>
-                    </div>
-                    <div class="f-right">
-                        <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Validate') ?></a>
-                    </div>
-                <?php elseif($_validateStatus == 'VALID'): ?>
-                    <div class="f-left validated">
-                        <div class="icon-wrapper">
-                            <i class="icon-picture"></i>
-                        </div>
-                        <p><?php echo $this->__('Adress is valid') ?></p>
-                    </div>
-                    <div class="f-right">
-                        <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Re-Validate') ?></a>
-                    </div>
-                    <?php else:?>
-                    <div class="f-left invalid">
-                        <div class="icon-wrapper">
-                            <i class="icon-picture"></i>
-                        </div>
-                        <p><?php echo $this->__('Adress Invalid') ?></p>
-                    </div>
-                    <div class="f-right">
-                        <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Re-Validate') ?></a>
-                    </div>
-                <?php endif;?>
+               <?php echo $this->getChildHtml('status')?>
             </div>
 
-
-            <div id="russify_loading" style="display: none;">
+            <div id="russify_loading" style="display: none; text-align: center;">
                 <span>
                     <img src="<?php echo $this->getSkinUrl('images/ajax-loader-tr.gif') ?>" alt="<?php echo Mage::helper('adminhtml')->__('Loading...') ?>"/>
                     <br/><?php echo Mage::helper('adminhtml')->__('Refreshing...') ?>
@@ -63,22 +30,23 @@
 <script type="text/javascript">
     //<![CDATA[
     var russifyLoading = $('russify_loading');
+    var resultBox = $('result');
     var usageBlock = Element.extend($('russify_box'));
     var address = <?php echo json_encode(Mage::helper('procommerz_russify')->prepareRequestArray($_shippingAddress)) ?>;
-    var checkRewardsUsageUri = "<?php echo $this->getUrl('russify/validation/check', array('_forced_secure' => $this->getRequest()->isSecure())) ?>";
+    var validateAddressUri = "<?php echo $this->getUrl('russify/validation/check', array('_forced_secure' => $this->getRequest()->isSecure())) ?>";
 
     validate = function() {
         russify_box.hide();
         russifyLoading.show();
-        // temporarily disable default Magento loader handler
         Ajax.Responders.unregister(varienLoaderHandler.handler);
         (function displayUsage() {
-            new Ajax.Request(checkRewardsUsageUri,{
+            new Ajax.Request(validateAddressUri,{
                 parameters: {isAjax: 1, method: 'POST', address: Object.toJSON(address)},
                 onSuccess: function(t) {
-                    russify_box.remove();
-                    var result = t.responseJSON;
-                    usageBlock.down().insert({before: result});
+//                    russify_box.remove();
+                    var result = t.responseJSON.result;
+                    usageBlock.insert({after: result});
+                    russify_box.show();
                     russifyLoading.hide();
                 },
                 onFailure: function(){
@@ -88,7 +56,6 @@
                 }
             });
         })();
-        // restore default Magento loader handler
         Ajax.Responders.register(varienLoaderHandler.handler);
     }
     //]]>

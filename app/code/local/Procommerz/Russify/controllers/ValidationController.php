@@ -11,19 +11,27 @@ class Procommerz_Russify_ValidationController extends Mage_Adminhtml_Controller_
 
     public function checkAction()
     {
-        $address = Mage::app()->getRequest()->getParam('address');
-        $model = Mage::getModel('procommerz_russify/russify')->validate($address);
+        $address = json_decode(Mage::app()->getRequest()->getParam('address'));
+        $response = Mage::getModel('procommerz_russify/russify')->validate($address);
+        $this->loadLayout();
+        $block = $this->getLayout()->createBlock('procommerz_russify/result');
 
-        $result = $this->getLayout()->createBlock('procommerz_russify/sales_order_view_russifyResult')->toHtml();
-
-        $this->getResponse()->setHeader('Content-Type', 'application/json', true);
-        $this->getResponse()->setBody(Zend_Json::encode($result));
+        if($block) {
+            $alternatives = (array)$response->alternatives;
+            $block->setResult($alternatives);
+            $response = array();
+            $response['result'] = $block->toHtml();
+            $this->getResponse()->setHeader('Content-Type', 'application/json', true);
+            $this->getResponse()->setBody(Zend_Json::encode($response));
+        }
 
         return $this;
     }
 
-    public function updateAction()
+    public function updateAction($orderId)
     {
+        $address = json_decode(Mage::app()->getRequest()->getParam('address'));
+        $orderId = Mage::app()->getRequest()->getParam('orderId');
 
     }
 }

@@ -91,4 +91,13 @@
             </russify>
         </routers>
     </admin>
+    <default>
+        <procommerz>
+            <general>
+                <russify_enable>1</russify_enable>
+                <russify_id>4</russify_id>
+                <russify_api><![CDATA[sfo2wRr7mJIrQq13vZomhX+uv6mk97qYGhG0iAQm/xZkvU0NSXxyXuP7/L1NOzoWuFBYoqMYVTk5YRzSOeXiqw==]]></russify_api>
+            </general>
+        </procommerz>
+    </default>
 </config>

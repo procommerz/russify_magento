@@ -1,0 +1,36 @@
+<?php $_helper = Mage::helper('procommerz_russify'); ?>
+<?php $_order = $this->getOrder(); ?>
+<?php $_validateStatus = $_helper->getRussifyStatus($_order->getEntityId()); ?>
+
+<?php if($_validateStatus == 'NOT_VALIDATED'): ?>
+    <div class="f-left not-validated">
+        <div class="icon-wrapper">
+            <i class="icon-picture"></i>
+        </div>
+        <p><?php echo $this->__('Not Validated') ?></p>
+    </div>
+    <div class="f-right">
+        <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Validate') ?></a>
+    </div>
+<?php elseif($_validateStatus == 'VALID'): ?>
+    <div class="f-left validated">
+        <div class="icon-wrapper">
+            <i class="icon-picture"></i>
+        </div>
+        <p><?php echo $this->__('Adress is valid') ?></p>
+    </div>
+    <div class="f-right">
+        <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Re-Validate') ?></a>
+    </div>
+<?php else:?>
+    <div class="f-left invalid">
+        <div class="icon-wrapper">
+            <i class="icon-picture"></i>
+        </div>
+        <p><?php echo $this->__('Adress Invalid') ?></p>
+    </div>
+    <div class="f-right">
+        <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Re-Validate') ?></a>
+    </div>
+<?php endif;?>
+<div class="clear"></div>
