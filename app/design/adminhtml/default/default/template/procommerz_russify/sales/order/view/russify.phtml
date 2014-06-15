@@ -12,9 +12,8 @@
                     <?php echo Mage::helper('procommerz_russify')->getFormattedAddress($_shippingAddress) ?>
                 </address>
             </div>
-
-            <div id="russify_box">
-               <?php echo $this->getChildHtml('status')?>
+            <div id="russify-wrapper">
+                <?php echo $this->getChildHtml('status')?>
             </div>
 
             <div id="russify_loading" style="display: none; text-align: center;">
@@ -31,9 +30,11 @@
     //<![CDATA[
     var russifyLoading = $('russify_loading');
     var resultBox = $('result');
-    var usageBlock = Element.extend($('russify_box'));
+    var usageBlock = Element.extend($('russify-wrapper'));
     var address = <?php echo json_encode(Mage::helper('procommerz_russify')->prepareRequestArray($_shippingAddress)) ?>;
     var validateAddressUri = "<?php echo $this->getUrl('russify/validation/check', array('_forced_secure' => $this->getRequest()->isSecure())) ?>";
+    var updateAddressUri = "<?php echo $this->getUrl('russify/validation/update', array('_forced_secure' => $this->getRequest()->isSecure())) ?>";
+    var orderId = <?php echo $_order->getEntityId(); ?>;
 
     validate = function() {
         russify_box.hide();
@@ -41,12 +42,11 @@
         Ajax.Responders.unregister(varienLoaderHandler.handler);
         (function displayUsage() {
             new Ajax.Request(validateAddressUri,{
-                parameters: {isAjax: 1, method: 'POST', address: Object.toJSON(address)},
+                parameters: {isAjax: 1, method: 'POST', address: Object.toJSON(address), orderId:orderId},
                 onSuccess: function(t) {
-//                    russify_box.remove();
+                    russify_box.remove();
                     var result = t.responseJSON.result;
                     usageBlock.insert({after: result});
-                    russify_box.show();
                     russifyLoading.hide();
                 },
                 onFailure: function(){
@@ -58,5 +58,32 @@
         })();
         Ajax.Responders.register(varienLoaderHandler.handler);
     }
+
+    updateRussify = function() {
+        var data = $('updateAddress').value;
+        var shippingBox = $('order-messages').next('.box-right',1).down('address');
+        russify_box.hide();
+        russifyLoading.show();
+        Ajax.Responders.unregister(varienLoaderHandler.handler);
+        (function updateAddress() {
+            new Ajax.Request(updateAddressUri,{
+                parameters: {isAjax: 1, method: 'POST', data: data, orderId:orderId},
+                onSuccess: function(t) {
+                    russify_box.remove();
+                    var result = t.responseJSON.result;
+                    var shipping = t.responseJSON.address;
+                    shippingBox.replace(shipping);
+                    usageBlock.insert({after: result});
+                    russifyLoading.hide();
+                },
+                onFailure: function(){
+                    alert('<?php echo $this->jsQuoteEscape($this->__('Server Error. Please try again.')) ?>');
+                    russifyLoading.hide();
+                    russify_box.show();
+                }
+            });
+        })();
+        Ajax.Responders.register(varienLoaderHandler.handler);
+    };
     //]]>
 </script>

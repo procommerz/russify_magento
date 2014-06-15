@@ -19,7 +19,7 @@
 #russify_box .validated .icon-wrapper { background: #4C7A34; text-align: center; }
 #russify_box .validated .icon-wrapper .icon-picture:before {content: "\f00c"; }
 #russify_box .not-validated,
-#russify_box .invalid { color: #840705;}
+#russify_box .invalid { color: #840705; line-height: 40px;}
 #russify_box .not-validated .icon-wrapper,
 #russify_box .invalid .icon-wrapper { background: #840705;text-align: center; }
 #russify_box .not-validated .icon-wrapper .icon-picture:before,

@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Procommerz_Russify>
-            <version>0.1.2</version>
+            <version>0.1.3</version>
         </Procommerz_Russify>
     </modules>
     <global>

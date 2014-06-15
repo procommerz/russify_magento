@@ -1,36 +1,62 @@
 <?php $_helper = Mage::helper('procommerz_russify'); ?>
-<?php $_order = $this->getOrder(); ?>
-<?php $_validateStatus = $_helper->getRussifyStatus($_order->getEntityId()); ?>
-
-<?php if($_validateStatus == 'NOT_VALIDATED'): ?>
-    <div class="f-left not-validated">
-        <div class="icon-wrapper">
-            <i class="icon-picture"></i>
-        </div>
-        <p><?php echo $this->__('Not Validated') ?></p>
-    </div>
-    <div class="f-right">
-        <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Validate') ?></a>
-    </div>
-<?php elseif($_validateStatus == 'VALID'): ?>
-    <div class="f-left validated">
-        <div class="icon-wrapper">
-            <i class="icon-picture"></i>
-        </div>
-        <p><?php echo $this->__('Adress is valid') ?></p>
-    </div>
-    <div class="f-right">
-        <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Re-Validate') ?></a>
-    </div>
+<?php if ($this->getOrderId()): ?>
+    <?php $_orderId = $this->getOrderId(); ?>
 <?php else:?>
-    <div class="f-left invalid">
-        <div class="icon-wrapper">
-            <i class="icon-picture"></i>
+    <?php $_orderId = $this->getOrder()->getEntityId(); ?>
+<?php endif; ?>
+
+<div id="russify_box">
+    <?php if($_results = $this->getResult()) :?>
+        <div class="not-validated">
+            <div class="icon-wrapper">
+                <i class="icon-picture"></i>
+            </div>
+            <p><?php echo $this->__('Address validated, check possible alternatives:') ?></p>
         </div>
-        <p><?php echo $this->__('Adress Invalid') ?></p>
-    </div>
-    <div class="f-right">
-        <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Re-Validate') ?></a>
-    </div>
-<?php endif;?>
-<div class="clear"></div>
+        <div class="clear"></div>
+        <div id="russify-result">
+            <hr/>
+            <input id ="updateAddress" class="validate-one-required-by-name" type="radio" name="first" value='<?php echo serialize($_results) ?>'><?php echo implode(', ', $_results) ?><br>
+            <div class="f-right">
+                <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Re-Validate') ?></a>
+                <a class="form-button" href="#" onclick="updateRussify()" ><?php echo $this->__('Update Address') ?></a>
+            </div>
+        </div>
+        <div class="clear"></div>
+    <?php else: ?>
+        <?php $_validateStatus = $_helper->getRussifyStatus($_orderId); ?>
+
+        <?php if($_validateStatus == 'VALID'): ?>
+            <div class="f-left validated">
+                <div class="icon-wrapper">
+                    <i class="icon-picture"></i>
+                </div>
+                <p><?php echo $this->__('Adress is valid') ?></p>
+            </div>
+            <div class="f-right">
+                <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Re-Validate') ?></a>
+            </div>
+        <?php elseif($_validateStatus == 'INVALID'): ?>
+            <div class="f-left invalid">
+                <div class="icon-wrapper">
+                    <i class="icon-picture"></i>
+                </div>
+                <p><?php echo $this->__('Adress Invalid') ?></p>
+            </div>
+            <div class="f-right">
+                <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Re-Validate') ?></a>
+            </div>
+        <?php else:?>
+            <div class="f-left not-validated">
+                <div class="icon-wrapper">
+                    <i class="icon-picture"></i>
+                </div>
+                <p><?php echo $this->__('Not Validated') ?></p>
+            </div>
+            <div class="f-right">
+                <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Validate') ?></a>
+            </div>
+        <?php endif;?>
+    <?php endif; ?>
+    <div class="clear"></div>
+</div>
