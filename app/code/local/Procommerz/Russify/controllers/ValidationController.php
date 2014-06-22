@@ -14,21 +14,23 @@ class Procommerz_Russify_ValidationController extends Mage_Adminhtml_Controller_
         $address = json_decode(Mage::app()->getRequest()->getParam('address'));
         $orderId = Mage::app()->getRequest()->getParam('orderId');
         $response = Mage::getModel('procommerz_russify/russify')->validate($address, $orderId);
-        $this->loadLayout();
+        if ($response) {
+            $this->loadLayout();
+            $block = $this->getLayout()->createBlock('procommerz_russify/status');
+            $block->setOrderId($orderId);
+            if($block) {
+                $alternatives = (array)$response->alternatives;
+                $block->setResult($alternatives);
+                $response = array();
+                $response['result'] = $block->toHtml();
+                $this->getResponse()->setHeader('Content-Type', 'application/json', true);
+                $this->getResponse()->setBody(Zend_Json::encode($response));
+            }
 
-        $block = $this->getLayout()->createBlock('procommerz_russify/status');
-        $block->setOrderId($orderId);
-
-        if($block) {
-            $alternatives = (array)$response->alternatives;
-            $block->setResult($alternatives);
-            $response = array();
-            $response['result'] = $block->toHtml();
-            $this->getResponse()->setHeader('Content-Type', 'application/json', true);
-            $this->getResponse()->setBody(Zend_Json::encode($response));
+            return $this;
         }
 
-        return $this;
+        throw new Exception('An unhandled exception occurred on the Russify server');
     }
 
     public function updateAction()
@@ -58,6 +60,7 @@ class Procommerz_Russify_ValidationController extends Mage_Adminhtml_Controller_
             $response = array();
             $response['result'] = $block->toHtml();
             $response['address'] = $shippingAddress->getFormated(true);
+            $response['newRequest'] = json_encode(Mage::helper('procommerz_russify')->prepareRequestArray($shippingAddress));
             $this->getResponse()->setHeader('Content-Type', 'application/json', true);
             $this->getResponse()->setBody(Zend_Json::encode($response));
         }

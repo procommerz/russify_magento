@@ -16,8 +16,8 @@
         <fieldset class="russify-np">
             <div>
                 <p><?php echo $this->__('Current shipping address:') ?></p>
-                <address>
-                    <?php echo Mage::helper('procommerz_russify')->getFormattedAddress($_shippingAddress) ?>
+                <address id="current-address">
+                    <?php echo $_shippingAddress->getFormated(true); ?>
                 </address>
             </div>
             <div id="russify-wrapper">
@@ -70,8 +70,9 @@
     updateRussify = function() {
         var alternativesForm = new Validation('alternative-form');
         if (alternativesForm.validate()) {
-            var data = $('updateAddress').value;
+            var data = $$('#alternative-form input:checked')[0].value;
             var shippingBox = $('order-messages').next('.box-right',1).down('address');
+            var shippingCurrent = $('current-address');
             russify_box.hide();
             russifyLoading.show();
             Ajax.Responders.unregister(varienLoaderHandler.handler);
@@ -83,6 +84,8 @@
                         var result = t.responseJSON.result;
                         var shipping = '<address>' + t.responseJSON.address + '</address>';
                         shippingBox.replace(shipping);
+                        shippingCurrent.replace(shipping);
+                        address = JSON.parse(t.responseJSON.newRequest);
                         usageBlock.insert({after: result});
                         russifyLoading.hide();
                     },

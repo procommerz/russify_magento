@@ -55,7 +55,9 @@ class Procommerz_Russify_Model_Russify
             try {
                 $response = curl_exec($curl);
                 $result   = json_decode($response);
-                if ($result->status_code === 200) {
+                if ($result->status === 'error') {
+                    throw new Exception($result->message);
+                } elseif ($result->status === 'failed' || $result->status === 'ok') {
                     $russifyInfo = Mage::getModel('procommerz_russify/result')->getCollection()->getInfoByOrderId($this->_orderId);
                     if (empty($russifyInfo)) {
                         Mage::getModel('procommerz_russify/result')
@@ -73,7 +75,8 @@ class Procommerz_Russify_Model_Russify
                     }
                 }
             } catch (Exception $e) {
-                Mage::logException($e);
+                Mage::log($result->message);
+                return false;
             }
 
             return $result;

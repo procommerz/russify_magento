@@ -24,11 +24,16 @@
         <div class="clear"></div>
         <div id="russify-result">
             <form action="#" method="post" id="alternative-form">
-                <ul id="alternative-links-list" class="options-list">
-                    <li>
-                        <input id ="updateAddress" class="validate-one-required-by-name" type="radio" name="first" value='<?php echo serialize($_results) ?>'><?php echo implode(', ', $_results) ?><br>
-                    </li>
-                </ul>
+                <?php $_lastKey = end(array_keys($_results)); ?>
+                <?php foreach($_results as $_key => $_value): ?>
+                    <input
+                    id ="updateAddress_<?php echo $_key; ?>"
+                    class="<?php echo ($_key == $_lastKey) ? 'validate-one-required' : '' ?>"
+                    type="radio" name="group1"
+                    value='<?php echo serialize($_value) ?>'>
+                    <?php echo implode(', ',get_object_vars($_value)) ?>
+                    <br>
+                <?php endforeach; ?>
             </form>
             <hr/>
             <div class="f-right">

@@ -16,20 +16,6 @@ class Procommerz_Russify_Helper_Data extends Mage_Core_Helper_Abstract
     const STATUS_VALID          = 'VALID';
     const STATUS_INVALID        = 'INVALID';
 
-    /** Format Shopping Address for Russify template
-     *
-     * @param $address
-     * @return string
-     */
-    public function getFormattedAddress($address)
-    {
-        return Mage::app()->getLocale()->getCountryTranslation($address->getCountryId())
-        . ", <br >" . $address->getPostcode()
-        . ", " . $address->getRegion()
-        . ", " .  $address->getCity()
-        . ", <br >" . $address->getData('street');
-    }
-
     /** Prepare Shipping Address for Russify.me
      *
      * @param $shippingAddress
