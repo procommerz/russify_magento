@@ -38,6 +38,6 @@
     background: url(../images/btn_bg.gif) repeat-x 0 100%;
 }
 #russify-result {margin: 15px 0;}
-#russify-result hr { margin-bottom: 10px;}
+#russify-result hr { margin: 10px 0;}
 #russify-result div {margin: 10px 0;}
 #russify-result input {margin-right: 10px;}

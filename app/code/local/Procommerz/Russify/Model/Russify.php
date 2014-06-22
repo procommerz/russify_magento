@@ -34,15 +34,7 @@ class Procommerz_Russify_Model_Russify
         $timestamp = gmdate('c');
         $contentType = 'application/x-www-form-urlencoded';
         $fields = (array)$this->_params;
-        foreach ($fields as $key => $value) {
-            $fields[$key] = Mage::helper('procommerz_russify')->transliterate($value);
-        }
         $postFields = str_replace('+', '%20', http_build_query($fields));
-
-//          country=Russia&region=Moskovskaia%20oblast&city=Moskva&address=ul.%20Aleksandra%20Solzhenitcyna%20d.%2027&zipcode=123123
-//            $postFields =str_replace(' ', '%20', $this->getPostString());
-//           country=Russia&region=Московская%20область&city=Москва&address=ул.%20Александра%20Солженицына%20д.%2027&zipcode=123123
-
         $content_MD5 = base64_encode(pack("H*", md5($postFields)));
         $canonicalStr = $contentType .','. $content_MD5 .','. parse_url($apiUrl, PHP_URL_PATH) .','. $timestamp;
         $signature = base64_encode(hash_hmac('sha1', $canonicalStr, $accessToken, true));

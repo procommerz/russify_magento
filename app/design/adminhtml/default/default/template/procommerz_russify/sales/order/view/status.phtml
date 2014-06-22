@@ -1,3 +1,11 @@
+<?php
+/**
+ * Validation Russify template
+ *
+ * @package    Procommerz_Russify
+ * @author     Denis Kolesnichenko <denis@mobiquest.ru>
+ */
+?>
 <?php $_helper = Mage::helper('procommerz_russify'); ?>
 <?php if ($this->getOrderId()): ?>
     <?php $_orderId = $this->getOrderId(); ?>
@@ -15,13 +23,20 @@
         </div>
         <div class="clear"></div>
         <div id="russify-result">
+            <form action="#" method="post" id="alternative-form">
+                <ul id="alternative-links-list" class="options-list">
+                    <li>
+                        <input id ="updateAddress" class="validate-one-required-by-name" type="radio" name="first" value='<?php echo serialize($_results) ?>'><?php echo implode(', ', $_results) ?><br>
+                    </li>
+                </ul>
+            </form>
             <hr/>
-            <input id ="updateAddress" class="validate-one-required-by-name" type="radio" name="first" value='<?php echo serialize($_results) ?>'><?php echo implode(', ', $_results) ?><br>
             <div class="f-right">
                 <a class="form-button" href="#" onclick="validate()" ><?php echo $this->__('Re-Validate') ?></a>
                 <a class="form-button" href="#" onclick="updateRussify()" ><?php echo $this->__('Update Address') ?></a>
             </div>
         </div>
+
         <div class="clear"></div>
     <?php else: ?>
         <?php $_validateStatus = $_helper->getRussifyStatus($_orderId); ?>
